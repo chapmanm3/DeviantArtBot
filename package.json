@@ -1,0 +1,11 @@
+{
+    "name": "DeviantArtBot",
+    "version": "1.0.0",
+    "description": "Deviant Art random generator",
+    "main": "bot.js",
+    "autor": "MC",
+    "dependencies": {
+        "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+        "winston": "^3.2.1"
+    }
+}
