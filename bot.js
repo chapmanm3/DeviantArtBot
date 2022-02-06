@@ -1,23 +1,35 @@
-const Discord = require('discord.js');
-const logger = require('winston');
+const { Client } = require('discord.js');
 const auth = require('./auth.json');
-
-//Configure logger settings...?
-logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console, {colorize: true});
-logger.lever = 'debug';
+const devBotObj = require('./deviantArt.js')
 
 //Initialize bot
-const bot = new Discord.Client();
+const client = new Client();
 
-bot.login(auth.token)
-
-bot.on('ready', (evt) => {
-    logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
+client.once('ready', (evt) => {
+  console.log("Ready");
 });
 
-bot.on("message", (message) => {
-    if (message.author.bot) return;
-})
+client.on('interactionCreate', async interaction => {
+  if(!interaction.isCommand()) return;
+
+  const { commandName } = interaction;
+
+  switch (commandName){
+    case 'ping':
+      await interaction.reply('Dong!');
+      break;
+    case 'devart':
+      await interaction.reply('Command Under Construction');
+      break;
+    case 'server':
+      await interaction.reply(`Server Name: ${interaction.guild.name}\nTotal Members: ${interaction.guild.memberCount}`)
+      break;
+    case 'user':
+      await interaction.reply(`Your tag: ${interaction.user.tag}\nYour id: ${interaction.user.id}`);
+      break;
+  };
+});
+
+client.login(token);
+
+
