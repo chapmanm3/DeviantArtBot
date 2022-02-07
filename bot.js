@@ -1,35 +1,43 @@
-const { Client } = require('discord.js');
-const auth = require('./auth.json');
-const devBotObj = require('./deviantArt.js')
+const { Client, Collection, Intents } = require('discord.js');
+const fs = require('fs');
+const devBotObj = require('./deviantArt.js');
+const { token } = require('./config.json');
 
 //Initialize bot
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
 
-client.once('ready', (evt) => {
+client.commands = new Collection();
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles){
+  const command = require(`./commands/${file}`);
+  //Set a new item in the Collection
+  //With the key as the command name and the value as the exported module
+  client.commands.set(command.data.name, command);
+}
+
+client.once('ready', () => {
   console.log("Ready");
+  client.user.setUsername('Kush Guy 420');
+  client.user.setActivity('Fortnite');
 });
+
+client.login(token);
+
+client.on('message', () => {console.log('message received')})
 
 client.on('interactionCreate', async interaction => {
   if(!interaction.isCommand()) return;
 
-  const { commandName } = interaction;
+  const command = client.commands.get(interaction.commandName);
 
-  switch (commandName){
-    case 'ping':
-      await interaction.reply('Dong!');
-      break;
-    case 'devart':
-      await interaction.reply('Command Under Construction');
-      break;
-    case 'server':
-      await interaction.reply(`Server Name: ${interaction.guild.name}\nTotal Members: ${interaction.guild.memberCount}`)
-      break;
-    case 'user':
-      await interaction.reply(`Your tag: ${interaction.user.tag}\nYour id: ${interaction.user.id}`);
-      break;
-  };
+  if(!command) return;
+  
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    await interaction.reply({content: 'There was an error while executing this command!', ephemeral: true});
+  }
 });
-
-client.login(token);
 
 

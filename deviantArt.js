@@ -1,4 +1,4 @@
-const { devArt } = require('./auth.json');
+const { devArt } = require('./config.json');
 const url = require('url')
 const axios = require('axios');
 
