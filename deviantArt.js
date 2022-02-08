@@ -19,6 +19,18 @@ const devArtInit = async () => {
   });
 }
 
+const oEmbed = async (url) => {
+  let returnUrl;
+  await axios.get(`https://backend.deviantart.com/oembed?url=${url}&format=json`) 
+    .then((resp) => {
+      returnUrl = resp.data.url;
+     })
+     .catch((err) => {
+      console.log(err);
+    })
+  return returnUrl;
+}
+
 const searchTags = async (tagName) => {
   let returnTag;
   await devArtInit();
@@ -50,8 +62,8 @@ const searchWithTag = async (tagName) => {
   console.log('Searching for tag: ' + randTag.tag_name);
   await axios.get(`https://www.deviantart.com/api/v1/oauth2/browse/tags?tag=${randTag.tag_name}&access_token=${accessToken}&mature_content=true`)
   .then((resp) => {
-    console.log(resp.data.results);
-    returnUrl = getRandUrlFromResults(resp.data.results);
+//    console.log(resp.data.results);
+    returnUrl = oEmbed(getRandUrlFromResults(resp.data.results));
   })
   .catch((err) => {
     console.log(err);
@@ -78,6 +90,8 @@ const getRandUrlFromResults = (results) => {
   const element = results[Math.floor(Math.random() * (results.length-1))];
   return element.url;
 }
+
+searchWithTag('fortnite');
 
 exports.init = devArtInit;
 exports.search = searchTags;
