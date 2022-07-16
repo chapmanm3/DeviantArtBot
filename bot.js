@@ -1,7 +1,9 @@
+require('dotenv').config({ path: '.env.develop'});
+console.log(process.env);
 const { Client, Collection, Intents } = require('discord.js');
 const fs = require('fs');
 const devBotObj = require('./deviantArt.js');
-const { token } = require('./config.json');
+const token = process.env.TOKEN;
 
 //Initialize bot
 const client = new Client({ intents: [Intents.FLAGS.GUILDS]});

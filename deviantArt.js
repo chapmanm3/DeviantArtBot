@@ -1,6 +1,11 @@
-const { devArt } = require('./config.json');
 const url = require('url')
 const axios = require('axios');
+
+const devArt = {
+  grant_type: process.env.DEVART_GRANT_TYPE,
+  client_id: process.env.DEVART_CLIENT_ID,
+  client_secret: process.env.DEVART_CLIENT_SECRET
+};
 
 let accessToken;
 
@@ -10,7 +15,6 @@ const devArtInit = async () => {
   const params = new url.URLSearchParams({...devArt});
   await axios.post('https://www.deviantart.com/oauth2/token', params.toString())
   .then((resp) => {
-    console.log(resp.data);
     accessToken = resp.data.access_token;
     return accessToken
   })
@@ -34,11 +38,10 @@ const oEmbed = async (url) => {
 const searchTags = async (tagName) => {
   let returnTag;
   await devArtInit();
-  console.log('Access Token is: ' + accessToken);
   const params = new url.URLSearchParams({tag_name: tagName, access_token: accessToken});
   await axios.get(`https://www.deviantart.com/api/v1/oauth2/browse/tags/search?tag_name=${tagName}&access_token=${accessToken}&mature_content=true`)
   .then((resp) => {
-    console.log("Tags you got: " + resp.data.results);
+    // console.log("Tags you got: " + resp.data.results);
     returnTag = resp.data.results;
   })
   .catch((err) => {
@@ -56,11 +59,13 @@ const searchTags = async (tagName) => {
 }
 
 const searchWithTag = async (tagName) => {
+  console.log("Tag Searched for: " + tagName);
   const randTags = await searchTags(tagName);
+  randTags.map((tag) => console.log(Object.values(tag)));
   const randTag = randTags[Math.floor(Math.random() * (randTags.length - 1))];
   let returnUrl;
   console.log('Searching for tag: ' + randTag.tag_name);
-  await axios.get(`https://www.deviantart.com/api/v1/oauth2/browse/tags?tag=${randTag.tag_name}&access_token=${accessToken}&mature_content=true`)
+  await axios.get(`https://www.deviantart.com/api/v1/oauth2/browse/tags?tag=${randTag.tag_name}&limit=50&access_token=${accessToken}&mature_content=true`)
   .then((resp) => {
 //    console.log(resp.data.results);
     returnUrl = oEmbed(getRandUrlFromResults(resp.data.results));
@@ -90,8 +95,6 @@ const getRandUrlFromResults = (results) => {
   const element = results[Math.floor(Math.random() * (results.length-1))];
   return element.url;
 }
-
-searchWithTag('fortnite');
 
 exports.init = devArtInit;
 exports.search = searchTags;
