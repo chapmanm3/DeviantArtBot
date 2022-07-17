@@ -4,7 +4,6 @@ const { Client, Collection, Intents } = require('discord.js');
 const fs = require('fs');
 const devBotObj = require('./deviantArt.js');
 const token = process.env.TOKEN;
-console.log(`TOKEN: ${token}`)
 
 //Initialize bot
 const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
