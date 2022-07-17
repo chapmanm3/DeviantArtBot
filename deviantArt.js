@@ -9,9 +9,21 @@ const devArt = {
 
 let accessToken;
 
+axios.interceptors.response.use((response) => {
+  return response
+}, (error) => {
+  if (error.response.status === 401) {
+    accessToken = null
+  }
+})
+
 const devArtInit = async () => {
   //Init shit
   console.log("Initing DevArt");
+  if(accessToken) {
+    console.log('returning existing token')
+    return accessToken 
+  }
   const params = new url.URLSearchParams({...devArt});
   await axios.post('https://www.deviantart.com/oauth2/token', params.toString())
   .then((resp) => {

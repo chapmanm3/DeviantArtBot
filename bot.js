@@ -4,6 +4,7 @@ const { Client, Collection, Intents } = require('discord.js');
 const fs = require('fs');
 const devBotObj = require('./deviantArt.js');
 const token = process.env.TOKEN;
+console.log(`TOKEN: ${token}`)
 
 //Initialize bot
 const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
@@ -36,6 +37,7 @@ client.on('interactionCreate', async interaction => {
   if(!command) return;
   
   try {
+    console.log(`Executing: ${command}`)
     await command.execute(interaction);
   } catch (error) {
     await interaction.reply({content: 'There was an error while executing this command!', ephemeral: true});
