@@ -13,7 +13,7 @@ module.exports = {
   async execute(interaction){
     const tag = interaction.options.getString('tag');
     const userId = interaction.user.id;
-    const url = await devArtApi.searchWithTag(userId, interaction.options.getString('tag'));
+    const url = await devArtApi.searchWithTag(userId, tag);
 
     await interaction.reply(`${url}`);
   }
