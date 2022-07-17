@@ -4,9 +4,13 @@ const { Client, Collection, Intents } = require('discord.js');
 const fs = require('fs');
 const devBotObj = require('./deviantArt.js');
 const token = process.env.TOKEN;
+const { run } = require('./utils/mongodbFuncs.js');
 
 //Initialize bot
 const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
+
+//Init Mongo
+run();
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
