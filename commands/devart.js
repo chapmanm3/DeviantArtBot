@@ -11,7 +11,9 @@ module.exports = {
         .setDescription('Tag to search Devaint Art for')
         .setRequired(true)),
   async execute(interaction){
-    const url = await devArtApi.searchWithTag(interaction.options.getString('tag'));
+    const tag = interaction.options.getString('tag');
+    const userId = interaction.user.id;
+    const url = await devArtApi.searchWithTag(userId, tag);
 
     await interaction.reply(`${url}`);
   }

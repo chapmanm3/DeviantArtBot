@@ -1,5 +1,6 @@
 const url = require('url')
 const axios = require('axios');
+const { recordUserSearch } = require('./utils/mongodbFuncs.js');
 
 const devArt = {
   grant_type: process.env.DEVART_GRANT_TYPE,
@@ -67,8 +68,10 @@ const searchTags = async (tagName) => {
   return returnTag;
 }
 
-const searchWithTag = async (tagName) => {
+const searchWithTag = async (userId, tagName) => {
+  console.log("User ID: " + userId);
   console.log("Tag Searched for: " + tagName);
+  await recordUserSearch(userId, tagName);
   const randTags = await searchTags(tagName);
   randTags.map((tag) => console.log(Object.values(tag)));
   const randTag = randTags[Math.floor(Math.random() * (randTags.length - 1))];
