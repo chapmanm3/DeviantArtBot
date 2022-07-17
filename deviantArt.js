@@ -42,7 +42,7 @@ const oEmbed = async (url) => {
       returnUrl = resp.data.url;
      })
      .catch((err) => {
-      console.log(err);
+      console.err(err);
     })
   return returnUrl;
 }
@@ -50,7 +50,6 @@ const oEmbed = async (url) => {
 const searchTags = async (tagName) => {
   let returnTag;
   await devArtInit();
-  const params = new url.URLSearchParams({tag_name: tagName, access_token: accessToken});
   await axios.get(`https://www.deviantart.com/api/v1/oauth2/browse/tags/search?tag_name=${tagName}&access_token=${accessToken}&mature_content=true`)
   .then((resp) => {
     // console.log("Tags you got: " + resp.data.results);
@@ -58,14 +57,12 @@ const searchTags = async (tagName) => {
   })
   .catch((err) => {
     if(err.response){
-      console.log(err.response);
+      console.error(err.response);
     }else if(err.request){
-      console.log(err.request);
+      console.error(err.request);
     }else{
-      console.log('Error', err.message);
+      console.error(err);
     }
-
-    console.log(err);
   });
   return returnTag;
 }
@@ -85,7 +82,6 @@ const searchWithTag = async (tagName) => {
   .catch((err) => {
     console.log(err);
   })
-  console.log(returnUrl);
   return returnUrl;
 };
 
